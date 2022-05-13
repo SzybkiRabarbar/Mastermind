@@ -1,5 +1,7 @@
 import PySimpleGUI as sg
 from random import randrange
+import webbrowser
+
 def get_hints(answer:list, guess:list)->dict: #*# Sprawdzanie wyniku
     
     result = {'Black':0, 'White':0}
@@ -57,37 +59,53 @@ layout = [[sg.Text('Odpowiedzi będą pojawiać się tutaj:')],
           [sg.Text('5.'), sg.Text(key='-OP5-')],
           [sg.Text('6.'), sg.Text(key='-OP6-')],
           [sg.Text('Odp:'), sg.Input(key='-IN-')],
-          [sg.Button('Show'), sg.Button('Exit'), sg.Button('Help')]]
+          [sg.Button('Spróbuj'), sg.Button('Exit'), sg.Button('Zasady'), sg.Button('Wikipedia'), sg.Button('Poznaj odpowiedź')]]
 
 window = sg.Window('MASTERMIND', layout)
 n, answer = 0, answer_generator()
 #!#print(answer)
 while True:  #*# Event Loop
+    
     event, values = window.read()
     print(event, values)
+    
+    if event == 'Poznaj odpowiedź':
+        sg.popup(f'Odpowiedź: {answer}')
+    
     if event == sg.WIN_CLOSED or event == 'Exit':
         break
-    if event == 'Help': #TODO: Naprawić link
-        help = ('Aby zagrać wpisz liczby 4 liczby od 1 do 6 w polu Odp.\n'
+    
+    if event == 'Zasady': 
+        help = ('Aby zagrać wpisz 4 cyfry (zakres od 1 do 6) w polu Odp.\n'
                'Kombinacja jest generowana losowo.\n'
-               'Więcej informacji i o grze MASTERMIND:\n'
-               'https://en.wikipedia.org/wiki/Mastermind_(board_game)') 
-        sg.popup(help)
-    if event == 'Show':
+               'Musisz odgadnąć kod w ciągu sześciu tur.\n'
+               'Każde próba odgadnięcia polega na wpisaniu 4 cyfr w pole Odp.\n'
+               'Po wpisaniu, program zwraca informację o ilości zgadniętych cyfr.\n'
+               'Liczba przy Black przyznawana jest za każdą cyfrę, która jest poprawna zarówno pod względem wartości, jak i położenia.\n'
+               'Liczba przy White wskazuje na istnienie prawidłowej wartości, umieszczonej w niewłaściwej pozycji.\n'
+               'Zakres cyfr: od 1 do 6\n'
+               'Więcej informacji o grze MASTERMIND znajdziesz na Wikipedii'
+               ) 
+        sg.popup(help, title="ZASADY")
+        
+    if event == 'Spróbuj':
         inp = guess_input(values['-IN-'])
         if not inp:
             sg.popup_error('Złe dane!')
             continue
         hint = get_hints(answer[:], inp[:])
-        content=f"{' '.join(inp)} | {' | '.join([f'{x}-{y}' for x,y in hint.items()])}"
+        content=f"{' '.join(inp)} | {' | '.join([f'{x}: {y}' for x,y in hint.items()])}"
         n+=1
         window[f'-OP{n}-'].update(content)
         window['-IN-'].update('')
         if hint.get('Black')==4:
-            sg.popup_ok("Gratulacje! Wygrałeś!")
+            sg.popup_ok("Gratulacje! Wygrałeś!",relative_location=(100,0))
             break
         if n==6:
-            sg.popup_ok(f"Przegrałeś! Odpowiedź to {' '.join([str(x) for x in answer])}")
+            sg.popup_ok(f"Przegrałeś! Odpowiedź to {' '.join([str(x) for x in answer])}",relative_location=(150,0))
             break
-
+        
+    if event == 'Wikipedia':
+        webbrowser.open("https://en.wikipedia.org/wiki/Mastermind_(board_game)")
+        
 window.close()
