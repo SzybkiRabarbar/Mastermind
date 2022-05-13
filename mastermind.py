@@ -25,31 +25,12 @@ def answer_generator()->list: #*# Generowanie odpowiedzi
     return [randrange(1,7) for _ in range(4)]
 
 def guess_input(inp): #*# Sprawdzanie i obróbka inputu
-    #?#print(f'{trial}. Wprowadź kombinacje:')
-    #?#inp = input()
     valid = {'1','2','3','4','5','6'}
     input_lst = [i for i in inp if i in valid]
     if len(input_lst)==4: return input_lst
     return False
-'''
-#?# Wersja w terminalu
-def main(): 
-    answer = answer_generator()
-    for trial in range(1,7):
-        input_lst = False
-        while not input_lst:
-            input_lst = guess_input(trial)
-        hints = get_hints(answer[:], input_lst[:])
-        print(''.join(input_lst), hints)
-        print(answer)
-        if hints.get('Black')==4: return f'Gratulacje! Wygrałeś!'
-    return f'Nie udało ci się, odpowiedzią było {answer}'
 
-if __name__=="__main__":
-    print('---MASTERMIND---')
-    print(main())
-'''
-sg.theme('Dark Brown 6')  # please make your windows colorful
+sg.theme('Dark Brown 6')
 
 layout = [[sg.Text('Odpowiedzi będą pojawiać się tutaj:')],
           [sg.Text('1.'), sg.Text(key='-OP1-')],
@@ -64,8 +45,7 @@ layout = [[sg.Text('Odpowiedzi będą pojawiać się tutaj:')],
 window = sg.Window('MASTERMIND', layout)
 n, answer = 0, answer_generator()
 #!#print(answer)
-while True:  #*# Event Loop
-    
+while True:  #*# Event Loop   
     event, values = window.read()
     #!#print(event, values)
     
