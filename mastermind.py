@@ -67,7 +67,7 @@ n, answer = 0, answer_generator()
 while True:  #*# Event Loop
     
     event, values = window.read()
-    print(event, values)
+    #!#print(event, values)
     
     if event == 'Poznaj odpowiedź':
         sg.popup(f'Odpowiedź: {answer}')
