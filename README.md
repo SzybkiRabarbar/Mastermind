@@ -1,3 +1,3 @@
-#MASTERMIND
+# ***MASTERMIND***
 
-Gra Mastermind zrobiona z użyciem PySimpleGui
+Gra __Mastermind__ zrobiona z użyciem __PySimpleGui__
