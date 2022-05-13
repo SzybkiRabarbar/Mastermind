@@ -1,19 +1,22 @@
 import PySimpleGUI as sg
 from random import randrange
 def get_hints(answer:list, guess:list)->dict: #*# Sprawdzanie wyniku
+    
     result = {'Black':0, 'White':0}
     guess = [int(x) for x in guess]
+    
     for i,g in enumerate(guess[:]):
-        if answer[i]==g:
-            result['Black'] = result.get('Black')+1
-            answer[i] = ''
-            guess[i] = ''
+        if not answer[i]==g: continue
+        result['Black'] = result.get('Black')+1
+        answer[i] = ''
+        guess[i] = ''
+    
     for i,g in enumerate(guess[:]):
-        if g=='': continue
-        if g in answer:
-            result['White'] = result.get('White')+1
-            answer[answer.index(g)] = ''
-            guess[i] = ''
+        if g=='' or not g in answer: continue    
+        result['White'] = result.get('White')+1
+        answer[answer.index(g)] = ''
+        guess[i] = ''
+    
     return result
 
 def answer_generator()->list: #*# Generowanie odpowiedzi
@@ -65,18 +68,18 @@ while True:  #*# Event Loop
     if event == sg.WIN_CLOSED or event == 'Exit':
         break
     if event == 'Help': #TODO: Naprawić link
-        hlp = ('Aby zagrać wpisz liczby 4 liczby od 1 do 6 w polu Odp.\n'
+        help = ('Aby zagrać wpisz liczby 4 liczby od 1 do 6 w polu Odp.\n'
                'Kombinacja jest generowana losowo.\n'
                'Więcej informacji i o grze MASTERMIND:\n'
                'https://en.wikipedia.org/wiki/Mastermind_(board_game)') 
-        sg.popup(hlp)
+        sg.popup(help)
     if event == 'Show':
         inp = guess_input(values['-IN-'])
         if not inp:
             sg.popup_error('Złe dane!')
             continue
         hint = get_hints(answer[:], inp[:])
-        content=f"{' '.join(inp)} - {' | '.join([f'{x}-{y}' for x,y in hint.items()])} "
+        content=f"{' '.join(inp)} | {' | '.join([f'{x}-{y}' for x,y in hint.items()])}"
         n+=1
         window[f'-OP{n}-'].update(content)
         window['-IN-'].update('')
